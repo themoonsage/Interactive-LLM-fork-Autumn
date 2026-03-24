@@ -257,13 +257,14 @@ if __name__ == "__main__":
             i = 0 #counter for files uploaded, used for naming and saving files
             files_uploaded_length = len(files_uploaded) #length of the file uploader list, used to determine when we have uploaded all files in the list
             for files in files_uploaded:
-                
-                save_folder = 'files_uploaded_to_Bob'  #define the folder to save uploaded files
+                documents_path = os.path.join(os.path.expanduser('~'), 'Documents')
+                save_folder = os.path.join(documents_path, 'Bob_Data') #define the folder to save uploaded files
+
                 if not os.path.exists(save_folder):
                     os.makedirs(save_folder) #if the folder doesn't exist, make it
 
                 #define the full path of the file and the folder
-                file_path = os.path.join(save_folder, files_uploaded[i].name)
+                file_path = os.path.join(os.path.join("./", save_folder), files_uploaded[i].name)
                 try:
                     #write the information of the file to the folder
                     with open(file_path, "wb") as f:
@@ -275,11 +276,13 @@ if __name__ == "__main__":
 
                     #with the file now uploaded and saved, use docling to interpret it
                     source = file_path #where the file is coming from
+
                     converter = DocumentConverter() #converter
                     doc = converter.convert(source).document #convert the file into a docling document
 
                     #define the full path of the file and the folder
                     docling_file_path = os.path.join(save_folder, "docling_" + files_uploaded[i].name)
+                    print("docling file path: ", docling_file_path)
 
                     #write the information of the file to the folder
                     with open(docling_file_path, "wb") as f:
@@ -312,6 +315,7 @@ if __name__ == "__main__":
                         )
                         st.rerun() #rerun to update the chat with the new assistant message about files being uploaded and processed
                 except Exception as e:
+                    print("Error exception: ", e)
                     st.error(e)
                     if files_uploaded[i].type == 'text/plain': #if the file i sjust plain text
                         file_contents = files_uploaded[i].read().decode("utf-8") #read and decode the file (put that in file data)
@@ -340,6 +344,7 @@ if __name__ == "__main__":
                         
                     else:
                         print("There's an issue with finding the file type dawg")
+
                         st.session_state.messages.append(
                         {
                             'role': 'assistant',

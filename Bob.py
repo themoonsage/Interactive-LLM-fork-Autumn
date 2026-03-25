@@ -316,7 +316,7 @@ if __name__ == "__main__":
                         st.rerun() #rerun to update the chat with the new assistant message about files being uploaded and processed
                 except Exception as e:
                     print("Error exception: ", e)
-                    st.error(e)
+                    
                     if files_uploaded[i].type == 'text/plain': #if the file i sjust plain text
                         file_contents = files_uploaded[i].read().decode("utf-8") #read and decode the file (put that in file data)
                         st.session_state.messages.append(
@@ -341,7 +341,43 @@ if __name__ == "__main__":
                             }
                         )
                         st.rerun()
-                        
+
+
+                    elif files_uploaded[i].type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': #if it's a .docx file
+                        document = Document(files_uploaded[i])
+                        file_contents = ""
+                        for paragraph in document.paragraphs:
+                            file_contents += paragraph.text + "\n"
+
+
+                        #system message for LLM
+                        st.session_state.messages.append(
+                            {
+                                'role': 'system',
+                                'content': f"A file has been uploaded named: {files_uploaded[i].name} \n"
+                                            f"The contents of the Word document are: \n{file_contents}"
+                            }
+                        )
+
+                        files_uploaded_length -= 1 #decrease the length of the file uploader list by 1 since we have already uploaded one file
+                        if files_uploaded_length >= 1:
+                            files_uploaded[i]=files_uploaded[i+1]  #move to the next file in the list if there are multiple files uploaded
+                            i += 1 #increment the file uploader list counter to move to the next file in the list
+                    
+                        elif files_uploaded_length == 0: #if there are no more files to upload, clear the file uploader and let the user know their files have been processed
+                            clear_file_uploader() #all files have been read, so clear the file uploader for *new* files
+                            st.session_state.messages.append( #let the user know their files have been processed
+                            {
+                                'role': 'assistant',
+                                'content': "All files have been uploaded and processed. How may I assist you with them?"
+                            }
+                        )
+                        st.rerun()
+
+
+
+
+
                     else:
                         print("There's an issue with finding the file type dawg")
 

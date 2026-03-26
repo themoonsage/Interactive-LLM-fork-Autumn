@@ -80,7 +80,7 @@ if __name__ == "__main__":
         st.session_state['CHATS'] = [INITIAL_CHAT_HISTORY.copy()] 
         st.session_state['CHAT_NAMES'] = ["Chat 1"]
         st.session_state.current_chat = 0
-        st.session_state.selected_chat = 0
+        st.session_state.selected_chat = 0   
 
     # --- Chat Management Functions---
 
@@ -247,6 +247,19 @@ if __name__ == "__main__":
                 else:
                     st.success("Chat renamed successfully.")
                 st.rerun()
+
+
+        #selectbox/dropdown/accordion
+        #the list holding the file names is FILE_NAMES, but this uses a local reference
+        filesUploadedSelectBox = st.selectbox(
+            "View Uploaded Files",
+            st.session_state['CHAT_NAMES'],
+            index = st.session_state.selected_chat,
+            key='file_names_selector',
+            on_change = lambda: chat_switch(
+                st.session_state['CHAT_NAMES'].index(st.session_state.file_names_selector)
+            )
+        )
 
     # --- File Uploading ---
 

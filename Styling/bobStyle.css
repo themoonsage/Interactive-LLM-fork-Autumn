@@ -10,6 +10,11 @@
     font-size: 40px; 
 }
 
+
+.st-key-file_names_selector{
+    bottom: -15vh;    
+}
+
 /*Button Styling*/
 div.stButton > button{
     background: #5A739C;
@@ -30,16 +35,18 @@ div.stButton > button:hover{
 
 .st-key-clear_chat_button button{
     position:absolute;
-    bottom: -40vb;
+    bottom: -35vb;
     width:100%;
 }
 
 
 .stFileUploader{
     position:absolute;
-    bottom: -35vb;
+    bottom: -30vb;
     width:100%;
 }
+
+
 
 /*|||||||||||||||||||||||||||||||||Sidebar Styling Section End|||||||||||||||||||||||||||||||||*/
 

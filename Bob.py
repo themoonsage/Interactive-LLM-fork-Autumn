@@ -79,6 +79,7 @@ if __name__ == "__main__":
         #CHATS is a list of chat histories (list of lists of dictionaries)
         st.session_state['CHATS'] = [INITIAL_CHAT_HISTORY.copy()] 
         st.session_state['CHAT_NAMES'] = ["Chat 1"]
+        st.session_state['FILES'] = [[]]
         st.session_state.current_chat = 0
         st.session_state.selected_chat = 0   
 
@@ -88,6 +89,7 @@ if __name__ == "__main__":
     def clear_all_chats():
         st.session_state['CHATS'] = [INITIAL_CHAT_HISTORY.copy()]
         st.session_state['CHAT_NAMES'] = ['Chat 1']
+        st.session_state['FILES'] = [[]] #reset the files as well when we clear chats
         st.session_state.messages = st.session_state['CHATS'][0].copy()
         st.session_state.current_chat = 0
         st.session_state.selected_chat = 0
@@ -104,6 +106,7 @@ if __name__ == "__main__":
         #append a new, complete chat history (a list of dictionaries)
         st.session_state['CHATS'].append(INITIAL_CHAT_HISTORY.copy()) 
         st.session_state['CHAT_NAMES'].append(CHAT_NAME)
+        st.session_state['FILES'].append([]) #append a new, empty file list for the new chat in session state
         
         #switch to the new chat
         new_chat_index = len(st.session_state['CHAT_NAMES']) - 1
@@ -130,6 +133,7 @@ if __name__ == "__main__":
         
         st.session_state['CHATS'].pop(chat_index) #remove the chat + its name
         st.session_state['CHAT_NAMES'].pop(chat_index)
+        st.session_state['FILES'].pop(chat_index) #remove the files associated with that chat as well
 
         if chat_index < st.session_state.current_chat: #if we deleted a chat before current, shift current_chat left
             st.session_state.current_chat -= 1
@@ -253,12 +257,9 @@ if __name__ == "__main__":
         #the list holding the file names is FILE_NAMES, but this uses a local reference
         filesUploadedSelectBox = st.selectbox(
             "View Uploaded Files",
-            st.session_state['CHAT_NAMES'],
-            index = st.session_state.selected_chat,
+            st.session_state['FILES'][st.session_state.current_chat] if st.session_state['FILES'] else [],
+            placeholder = "View uploaded files for this chat.",
             key='file_names_selector',
-            on_change = lambda: chat_switch(
-                st.session_state['CHAT_NAMES'].index(st.session_state.file_names_selector)
-            )
         )
 
     # --- File Uploading ---
@@ -313,6 +314,10 @@ if __name__ == "__main__":
                         ) 
                     print("File was uploaded btw: " + f.name) #print the name of the file that was uploaded to the terminal for testing purposes
 
+                    legible_name = f.name.split("docling_") #split the name of the file to make it more legible for the user (after docling segment)
+                    
+                    st.session_state['FILES'][st.session_state.current_chat].append(legible_name[len(legible_name)-1]) #add the file name to the list of files for the current chat in session state
+                    
                     files_uploaded_length -= 1 #decrease the length of the file uploader list by 1 since we have already uploaded one file
                     if files_uploaded_length >= 1:
                         files_uploaded[i]=files_uploaded[i+1]  #move to the next file in the list if there are multiple files uploaded

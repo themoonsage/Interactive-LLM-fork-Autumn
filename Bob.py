@@ -335,8 +335,11 @@ if __name__ == "__main__":
                 except Exception as e:
                     print("Error exception: ", e)
                     
-                    if files_uploaded[i].type == 'text/plain': #if the file i sjust plain text
+                    if files_uploaded[i].type == 'text/plain': #if the file is just plain text
                         file_contents = files_uploaded[i].read().decode("utf-8") #read and decode the file (put that in file data)
+                    
+                        st.session_state['FILES'][st.session_state.current_chat].append(files_uploaded[i].name) #add the file name to the list of files for the current chat in session state
+                    
                         st.session_state.messages.append(
                         {
                             'role': 'system',
@@ -363,6 +366,9 @@ if __name__ == "__main__":
 
                     elif files_uploaded[i].type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': #if it's a .docx file
                         document = Document(files_uploaded[i])
+                    
+                        st.session_state['FILES'][st.session_state.current_chat].append(document[len(document)-1]) #add the file name to the list of files for the current chat in session state
+                    
                         file_contents = ""
                         for paragraph in document.paragraphs:
                             file_contents += paragraph.text + "\n"

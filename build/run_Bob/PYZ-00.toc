@@ -1,5 +1,5 @@
 ('/Users/kaylinwilley/Documents/Assorted School/Senior '
- 'Design/InteractiveLLMDashboard/build/run_Bob/PYZ-00.pyz',
+ 'Design/Kaylin-Bob-Fork/build/run_Bob/PYZ-00.pyz',
  [('AppKit',
    '/Users/kaylinwilley/Documents/Assorted School/Senior '
    'Design/Kaylin-Bob-Fork/venv/lib/python3.13/site-packages/AppKit/__init__.py',
@@ -1769,7 +1769,7 @@
    'PYMODULE'),
   ('config',
    '/Users/kaylinwilley/Documents/Assorted School/Senior '
-   'Design/InteractiveLLMDashboard/config.py',
+   'Design/Kaylin-Bob-Fork/config.py',
    'PYMODULE'),
   ('configparser',
    '/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/configparser.py',

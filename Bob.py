@@ -14,6 +14,7 @@ from pypdf import PdfReader #in venv --> pip install pypdf
 import pandas as pd #in venv --> pip install pandas, pip install tabulate
 from docx import Document #in venv --> pip install python-docx
 from docling.document_converter import DocumentConverter
+from PIL import Image 
 
 #also note, for installations you should also be able to do pip install -r requirements.txt (all of the requirements should be in there)
 
@@ -286,10 +287,60 @@ if __name__ == "__main__":
 
 
 
-                    #DOCLING STUFF IS GOING TO HAPPEN BELOW#
 
                     #with the file now uploaded and saved, use docling to interpret it
                     source = file_path #where the file is coming from
+
+                    if "image" in files_uploaded[i].type: #if the file is an image
+                        image = Image.open(file_path) #open the image file
+                        image_prompt = "An image file has been uploaded named: " + files_uploaded[i].name + "Identify what is in the image. Give detail." 
+                        image_response = ollama.chat(
+                            model="llava:7b",
+                            messages=[
+                                {
+                                    "role": "user",
+                                    "content": image_prompt,
+                                    "images": [files_uploaded[i].getvalue()]
+                                }
+                            ]
+                        )
+
+
+                        #print ("Image response: ", image_response) #test to see what the image response is (uncomment if you want to test this again...)
+                        
+                        st.session_state.messages.append(
+                            {
+                                    'role': 'system',
+                                    "content": f"An image has been uploaded named: {files_uploaded[i].name} "
+                                                f"The contents of the image are: {image_response['message']['content']}" #tell the assistant what the image is, but do not print this out
+                            }
+                        )
+                        st.session_state.messages.append( #let the user know their files have been processed
+                                {
+                                    'role': 'assistant',
+                                    'content': "All files have been uploaded and processed. How may I assist you with them?"
+                                }
+                        )
+                        files_uploaded_length -= 1 #decrease the length of the file uploader list by 1 since we have already uploaded one file
+                        if files_uploaded_length >= 1:
+                            files_uploaded[i]=files_uploaded[i+1]  #move to the next file in the list if there are multiple files uploaded
+                            i += 1 #increment the file uploader list counter to move to the next file in the list
+                    
+                        elif files_uploaded_length == 0: #if there are no more files to upload, clear the file uploader and let the user know their files have been processed
+                            clear_file_uploader() #all files have been read, so clear the file uploader for *new* files
+                            st.session_state.messages.append( #let the user know their files have been processed
+                                    {
+                                        'role': 'assistant',
+                                        'content': "All files have been uploaded and processed. How may I assist you with them?"
+                                    }
+                            )
+                            st.rerun() #rerun to update the chat with the new assistant message about files being uploaded and processed
+                        continue #skip the rest of the loop as the image has been described and taken in
+
+                    print("File was uploaded btw: " + f.name) #print the name of the file that was uploaded to the terminal for testing purposes
+
+
+                    #DOCLING STUFF IS GOING TO HAPPEN BELOW#
 
                     converter = DocumentConverter() #converter
                     doc = converter.convert(source).document #convert the file into a docling document

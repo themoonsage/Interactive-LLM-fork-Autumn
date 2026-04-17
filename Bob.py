@@ -315,12 +315,7 @@ if __name__ == "__main__":
                                                 f"The contents of the image are: {image_response['message']['content']}" #tell the assistant what the image is, but do not print this out
                             }
                         )
-                        st.session_state.messages.append( #let the user know their files have been processed
-                                {
-                                    'role': 'assistant',
-                                    'content': "All files have been uploaded and processed. How may I assist you with them?"
-                                }
-                        )
+                        
                         files_uploaded_length -= 1 #decrease the length of the file uploader list by 1 since we have already uploaded one file
                         if files_uploaded_length >= 1:
                             files_uploaded[i]=files_uploaded[i+1]  #move to the next file in the list if there are multiple files uploaded

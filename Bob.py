@@ -293,6 +293,7 @@ if __name__ == "__main__":
 
                     if "image" in files_uploaded[i].type: #if the file is an image
                         image = Image.open(file_path) #open the image file
+                        st.session_state['FILES'][st.session_state.current_chat].append(file_path.split("Bob_Data/")[1]) #add the image file to the current chat file list.
                         image_prompt = "An image file has been uploaded named: " + files_uploaded[i].name + "Identify what is in the image. Give detail." 
                         image_response = ollama.chat(
                             model="llava:7b",
